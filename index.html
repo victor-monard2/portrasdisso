@@ -57,6 +57,12 @@ h1 em { font-style: normal; color: var(--acc); }
 .cat:first-of-type { border-top: 0; }
 .cat .nm { font-weight: 600; font-size: 14px; }
 .cat .src { font-family: var(--f-mono); font-size: 10px; color: var(--muted); letter-spacing: .06em; }
+.cat .prem { font-size: 13px; color: var(--fg); opacity: .85; margin-top: 3px; }
+.prem-list { font-size: 15px; line-height: 1.45; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 8px; }
+.prem-list b { color: var(--fg); }
+.sint { font-size: 18px; line-height: 1.35; font-weight: 600; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-left: 4px solid var(--acc); border-radius: 10px; padding: 12px 14px; display: grid; gap: 8px; }
+[hidden] { display: none !important; }
+.sint .ver { font-family: var(--f-mono); font-size: 12px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
 .field { display: flex; align-items: center; background: var(--bg); border: 1px solid var(--line); border-radius: 9px; padding: 0 10px; }
 .field:focus-within { border-color: var(--acc); }
 .field span { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
@@ -71,6 +77,7 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-app
 .hero p { margin: 0; font-size: 17px; max-width: 46ch; }
 .hero p b { color: var(--fg); }
 .stack { height: 30px; border-radius: 8px; display: flex; overflow: hidden; background: var(--bg); }
+.hero .stack { margin: 14px 0; }
 .stack i { height: 100%; transition: width .5s cubic-bezier(.2,.8,.2,1); }
 .split { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 @media (max-width: 560px) { .split { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -179,6 +186,7 @@ footer { color: var(--muted); font-size: 12px; margin-top: 34px; max-width: 74ch
         <div class="hero">
           <div class="big" id="h-big">R$ 0</div>
           <p id="h-txt"></p>
+          <div class="sint" id="h-sint" hidden></div>
           <div class="stack" id="h-stack"></div>
           <div class="split">
             <div style="--c:var(--tax)"><small>Imposto</small><b id="s-tax"></b></div>
@@ -186,13 +194,14 @@ footer { color: var(--muted); font-size: 12px; margin-top: 34px; max-width: 74ch
             <div style="--c:var(--int)"><small>Juros</small><b id="s-int"></b></div>
             <div style="--c:#4a5057"><small>Quem faz o serviço</small><b id="s-rest"></b></div>
           </div>
-          <div class="year">Em um ano: <b id="y-val"></b> em imposto, intermediários e juros.</div>
+          <div class="prem-list" id="h-prem" hidden></div>
+          <div class="year">Estimativa em um ano: <b id="y-val"></b> em imposto, intermediários e juros.</div>
           <div class="share"><button class="btn ghost" id="share" type="button">Copiar meu resultado</button><span class="copied" id="copied" hidden>Copiado. Cola no story e marca @portrasdisso_br</span></div>
         </div>
 
         <div class="offer">
           <div class="offer-top"><span class="eyebrow">Raio-X Completo</span><span class="price">R$ 19,90</span></div>
-          <h3>Seus <span id="o-val">R$ 0</span> por ano que somem têm conserto. O plano tá aqui.</h3>
+          <h3>Quer organizar seus gastos e comparar alternativas? Conheça o Raio-X Completo.</h3>
           <ul>
             <li><b>Planilha Raio-X Completo:</b> todas as contas, acompanhamento mês a mês e as suas 3 contas mais pesadas destacadas sozinhas.</li>
             <li><b>Plano de 30 dias:</b> o que fazer em cada semana pra pagar menos.</li>
@@ -235,7 +244,7 @@ footer { color: var(--muted); font-size: 12px; margin-top: 34px; max-width: 74ch
     </div>
   </section>
 
-  <footer>Conteúdo educativo do Por Trás Disso. As porcentagens são médias dos dados mostrados em cada vídeo (ANP, Aneel, Banco Central, IBGE e as próprias empresas) e mudam com o tempo e de lugar pra lugar. Não é recomendação financeira.</footer>
+  <footer>Conteúdo educativo do Por Trás Disso. As porcentagens são premissas tiradas dos vídeos: médias de dados oficiais (ANP, Aneel, Banco Central, IBGE e as próprias empresas) ou hipóteses ilustrativas, indicadas em cada conta. Elas mudam com o tempo e de lugar pra lugar, e o resultado é uma estimativa, não o valor exato das suas compras nem dinheiro que você recupera. Não é recomendação financeira.</footer>
 </div>
 
 <script>
@@ -253,16 +262,25 @@ footer { color: var(--muted); font-size: 12px; margin-top: 34px; max-width: 74ch
       how: 'Impostos (18%) e encargos (15%); distribuição (26%) e transmissão (10%). Só uns 30% é a energia.',
       tip: ['Conta de luz alta?', 'Como só 30% é energia, economizar no consumo ajuda menos do que parece. Energia por assinatura pode baixar a parte da energia sem obra.'], partner: true },
     { id: 'app', nm: 'Corridas de app', src: 'Vídeo · Uber', def: 120, tax: 0, mid: .25, int: 0,
-      how: 'A Uber diz que fica com uns 25% em média; em algumas corridas passa de 40%.',
+      prem: 'Hipótese ilustrativa: 25% de cada corrida',
+      sint: 'Simulação com 25%. A taxa real varia; não mede suas viagens.',
+      premissa: 'Corridas de app: hipótese ilustrativa de 25% de cada corrida para a plataforma. A taxa real varia em cada viagem, e o resultado não mede o repasse das suas viagens.',
+      how: 'Hipótese ilustrativa: 25% de cada corrida para a plataforma. A taxa real varia em cada viagem.',
       tip: ['Muita corrida por app?', 'Comparar os apps na hora do pedido e evitar horário de preço dinâmico muda bastante o valor final.'] },
     { id: 'food', nm: 'Delivery', src: 'Vídeo · iFood', def: 300, tax: 0, mid: .262, int: 0,
       how: 'Com entrega do iFood: 23% de comissão mais 3,2% de taxa de pagamento.',
       tip: ['Pede muito delivery?', 'Muito restaurante cobra mais caro no app pra cobrir a comissão. Pedir direto pelo WhatsApp do restaurante costuma sair mais barato.'] },
     { id: 'mkt', nm: 'Compras online', src: 'Vídeo · Mercado Livre e Shopee', def: 200, tax: 0, mid: .14, int: 0,
-      how: 'As plataformas ficam com algo entre 10% e 14% de comissão, fora tarifas por venda.',
+      prem: 'Hipótese ilustrativa: 14% de cada compra',
+      sint: 'Simulação com 14%. A comissão real varia; não mede suas compras.',
+      premissa: 'Compras online: hipótese ilustrativa de 14% de cada compra para a plataforma. As comissões publicadas por Shopee e Mercado Livre variam por categoria, faixa de preço e tipo de anúncio, com tarifas fixas à parte, e a conta não diz quanto delas entra no preço que você paga.',
+      how: 'Hipótese ilustrativa: 14% de cada compra para a plataforma. A comissão real varia por categoria, faixa de preço e tipo de anúncio.',
       tip: ['Compra muito online?', 'Ativar cashback e comparar o mesmo produto entre plataformas costuma render alguns reais por compra.'], partner: true },
     { id: 'cart', nm: 'Compras no cartão', src: 'Vídeo · Maquininha', def: 1200, tax: 0, mid: .02, int: 0,
-      how: 'A loja paga uns 2% de taxa em cada venda no crédito, e isso entra no preço.',
+      prem: 'Hipótese ilustrativa: 2% de taxa por compra',
+      sint: 'Simulação com taxa de 2%. A taxa e o repasse ao preço variam.',
+      premissa: 'Compras no cartão: hipótese ilustrativa de 2% de taxa da maquininha em cada compra. Não é a taxa atual de todas as lojas: a média do crédito à vista no Banco Central foi 1,92% no 2º trimestre de 2026 (no débito, 1,03%), e cada loja tem a sua. A conta também não diz quanto dessa taxa é repassado ao preço.',
+      how: 'Hipótese ilustrativa: 2% de taxa da maquininha por compra (média do crédito à vista no Banco Central: 1,92%, 2º tri/2026). A taxa e o repasse ao preço variam.',
       tip: ['Desconto no Pix', 'Como a loja paga a taxa do cartão, muita loja dá desconto no Pix. Vale perguntar sempre.'] },
     { id: 'show', nm: 'Ingressos', src: 'Vídeo · Ingresso de show', def: 0, tax: 0, mid: .167, int: 0,
       how: 'A taxa de conveniência costuma ficar em uns 20% em cima do ingresso.',
@@ -279,7 +297,7 @@ footer { color: var(--muted); font-size: 12px; margin-top: 34px; max-width: 74ch
   // monta os campos
   $('cats').innerHTML = CATS.map(c => `
     <div class="cat">
-      <label for="c-${c.id}"><div class="nm">${c.nm}</div><div class="src">${c.src}</div></label>
+      <label for="c-${c.id}"><div class="nm">${c.nm}</div><div class="src">${c.src}</div>${c.prem ? `<div class="prem">${c.prem}</div>` : ''}</label>
       <div class="field"><span>R$</span><input id="c-${c.id}" type="number" min="0" step="10" value="${c.def}" inputmode="numeric"></div>
     </div>`).join('');
 
@@ -302,13 +320,16 @@ footer { color: var(--muted); font-size: 12px; margin-top: 34px; max-width: 74ch
     const lost = tax + mid + int, rest = Math.max(0, total - lost);
     $('h-big').textContent = brl(lost);
     $('h-txt').innerHTML = total
-      ? `De <b>${brl(total)}</b> que você gasta por mês nessas contas, <b>${pct(lost / total)}</b> vão pra imposto, pra quem fica no meio do caminho e pra juros.`
+      ? `Estimativa: de <b>${brl(total)}</b> que você gasta por mês nessas contas, cerca de <b>${pct(lost / total)}</b> vão pra imposto, pra quem fica no meio do caminho e pra juros.`
       : 'Coloca pelo menos um gasto pra ver o seu Raio-X.';
+    const sints = rows.filter(r => r.c.sint).map(r => `<div>${r.c.sint}</div>`);
+    $('h-sint').innerHTML = sints.join('') + '<a class="ver" href="#h-prem">Premissa completa abaixo ↓</a>'; $('h-sint').hidden = !sints.length;
+    const prems = rows.filter(r => r.c.premissa).map(r => `<div><b>Premissa completa ·</b> ${r.c.premissa}</div>`);
+    $('h-prem').innerHTML = prems.join(''); $('h-prem').hidden = !prems.length;
     const w = x => total ? (x / total * 100) + '%' : '0';
     $('h-stack').innerHTML = `<i style="width:${w(tax)};background:var(--tax)"></i><i style="width:${w(mid)};background:var(--mid)"></i><i style="width:${w(int)};background:var(--int)"></i><i style="width:${w(rest)};background:#4a5057"></i>`;
     $('s-tax').textContent = brl(tax); $('s-mid').textContent = brl(mid); $('s-int').textContent = brl(int); $('s-rest').textContent = brl(rest);
     $('y-val').textContent = brl(lost * 12);
-    $('o-val').textContent = brl(lost * 12);
 
     rows.sort((a, b) => (b.t + b.m + b.i) - (a.t + a.m + a.i));
     $('rows').innerHTML = rows.map(r => {
